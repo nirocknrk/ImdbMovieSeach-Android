@@ -7,8 +7,5 @@ import retrofit2.http.Query
 
 interface MovieApiService {
     @GET("/")
-    suspend fun searchMovies(
-        @Query("s") query: String,
-        @Query("apikey") apiKey: String = "8d6aa4ca"
-    ): Response<MovieResponse>
+    suspend fun searchMovies(@Query("s") query: String): Response<MovieResponse>
 }
