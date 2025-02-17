@@ -12,7 +12,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -21,7 +20,6 @@ class MovieWebServiceModule {
 
     @Singleton
     @Provides
-    @Named("NEWCmsService")
     fun getImdbMovieWebService(): MovieApiService {
 
 
@@ -39,21 +37,6 @@ class MovieWebServiceModule {
             .create(MovieApiService::class.java)
     }
 
-    private fun getApiKeyInterceptor(): Interceptor {
-        return Interceptor() { chain ->
-            var request = chain.request()
-            val url = request.url
-                .newBuilder()
-                .addQueryParameter("apikey", BuildConfig.IMDB_APIKEY)
-                .build()
-
-            request = request.newBuilder()
-                .addHeader("Content-Type", "application/json")
-                .url(url).build()
-            chain.proceed(request)
-        }
-    }
-
     fun getBasicHttpClientBuilder(): OkHttpClient.Builder {
         return OkHttpClient.Builder()
             .readTimeout(10, TimeUnit.SECONDS)
@@ -66,5 +49,23 @@ class MovieWebServiceModule {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = if(BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         return interceptor
+    }
+
+    fun getApiKeyInterceptor(): Interceptor{
+        return Interceptor { chain ->
+            val originalRequest = chain.request()
+            val originalUrl = originalRequest.url
+
+            // Add the query parameter (e.g., `apikey` for OMDb API)
+            val newUrl = originalUrl.newBuilder()
+                .addQueryParameter("apikey", BuildConfig.IMDB_APIKEY) // Add your API key
+                .build()
+
+            val newRequest = originalRequest.newBuilder()
+                .url(newUrl)
+                .build()
+
+            chain.proceed(newRequest)
+        }
     }
 }
