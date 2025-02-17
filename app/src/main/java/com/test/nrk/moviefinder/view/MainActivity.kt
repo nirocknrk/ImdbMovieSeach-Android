@@ -1,4 +1,4 @@
-package com.test.nrk.moviefinder
+package com.test.nrk.moviefinder.view
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -9,6 +9,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import com.test.nrk.moviefinder.R
 import com.test.nrk.moviefinder.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
